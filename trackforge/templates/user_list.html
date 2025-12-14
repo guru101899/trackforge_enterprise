@@ -4,65 +4,105 @@
     <meta charset="UTF-8">
     <title>User List</title>
     <style>
+        /* Reset & Base Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 50px auto;
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
 
         h1 {
             text-align: center;
-            color: #333333;
-            margin-bottom: 20px;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2rem;
         }
 
+        /* Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 14px 18px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
 
         th {
-            background-color: #f0f4f8;
-            color: #555555;
-            font-weight: bold;
+            background-color: #ecf0f1;
+            color: #34495e;
+            font-weight: 600;
         }
 
         tr:hover {
-            background-color: #f1f7ff;
+            background-color: #f1f8ff;
         }
 
+        /* Buttons */
+        .button {
+            display: inline-block;
+            padding: 6px 14px;
+            margin-right: 5px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .button.edit {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+
+        .button.edit:hover {
+            background-color: #2980b9;
+        }
+
+        .button.delete {
+            background-color: #e74c3c;
+            color: #ffffff;
+        }
+
+        .button.delete:hover {
+            background-color: #c0392b;
+        }
+
+        /* No users message */
         .no-users {
             text-align: center;
-            color: #888888;
-            padding: 20px 0;
+            color: #95a5a6;
+            padding: 30px 0;
+            font-size: 1rem;
         }
 
-        a {
+        /* Create user button */
+        .create-user-btn {
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 25px;
+            padding: 10px 22px;
+            background-color: #2ecc71;
+            color: #ffffff;
             text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .create-user-btn:hover {
+            background-color: #27ae60;
         }
     </style>
 </head>
@@ -79,6 +119,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -88,6 +129,10 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.role }}</td>
+                <td>
+                    <a href="{% url 'update_user' user.id %}" class="button edit">Edit</a>
+                    <a href="{% url 'delete_user' user.id %}" class="button delete">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -96,7 +141,7 @@
     <div class="no-users">No users found.</div>
     {% endif %}
 
-    <a href="{% url 'register_user' %}">Create New User</a>
+    <a href="{% url 'register_user' %}" class="create-user-btn">Create New User</a>
 </div>
 
 </body>
