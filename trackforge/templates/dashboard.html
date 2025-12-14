@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrackForge Enterprise Dashboard</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2f3640;
+        margin-bottom: 20px;
+    }
+
+    .auth-buttons {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .auth-buttons a {
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 500;
+        margin: 0 8px;
+        display: inline-block;
+    }
+
+    .login-btn {
+        background-color: #273c75;
+        color: #ffffff;
+    }
+
+    .register-btn {
+        background-color: #ffffff;
+        color: #273c75;
+        border: 2px solid #273c75;
+    }
+
+    .login-btn:hover {
+        background-color: #40739e;
+    }
+
+    .register-btn:hover {
+        background-color: #273c75;
+        color: #ffffff;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    .card h3 {
+        margin-bottom: 15px;
+        color: #273c75;
+        font-size: 1.2rem;
+    }
+
+    .card p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        color: #718093;
+    }
+
+    .card a {
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #273c75;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        display: inline-block;
+    }
+
+    .card a:hover {
+        background-color: #40739e;
+    }
+</style>
+</head>
+<body>
+
+<h1>TrackForge Enterprise Dashboard</h1>
+<div class="auth-buttons" style="text-align:center; margin-bottom:40px;">
+    {% if user.is_authenticated %}
+        <div style="
+            display:inline-flex;
+            align-items:center;
+            gap:15px;
+            background-color:#dcdde1;
+            padding:10px 20px;
+            border-radius:25px;
+            box-shadow:0 4px 8px rgba(0,0,0,0.1);
+        ">
+            <span style="font-weight:600; color:#273c75;">
+                Logged in as {{ user.username }} ({{ user.role }})
+            </span>
+            <a href="{% url 'logout' %}" style="
+                text-decoration:none;
+                padding:8px 16px;
+                background-color:#273c75;
+                color:white;
+                border-radius:20px;
+                transition:0.2s;
+            "
+            onmouseover="this.style.backgroundColor='#40739e'"
+            onmouseout="this.style.backgroundColor='#273c75'">
+                Logout
+            </a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" style="
+            text-decoration:none;
+            padding:10px 22px;
+            border-radius:8px;
+            background-color:#273c75;
+            color:white;
+            font-weight:500;
+            margin-right:10px;
+            transition:0.2s;
+        " onmouseover="this.style.backgroundColor='#40739e'" onmouseout="this.style.backgroundColor='#273c75'">
+            Login
+        </a>
+        <a href="{% url 'register_user' %}" style="
+            text-decoration:none;
+            padding:10px 22px;
+            border-radius:8px;
+            background-color:white;
+            color:#273c75;
+            border:2px solid #273c75;
+            font-weight:500;
+            transition:0.2s;
+        " onmouseover="this.style.backgroundColor='#273c75'; this.style.color='white';"
+           onmouseout="this.style.backgroundColor='white'; this.style.color='#273c75';">
+            Register
+        </a>
+    {% endif %}
+</div>
+
+
+
+<div class="dashboard">
+    <div class="card">
+        <h3>Accounts</h3>
+        <p>{{ user_count }} users</p>
+        <a href="{% url 'user_list' %}">Go</a>
+    </div>
+
+    <div class="card">
+        <h3>Inventory</h3>
+        <p>{{ product_count }} products</p>
+        <a href="{% url 'product_list' %}">Go</a>
+    </div>
+
+    <div class="card">
+        <h3>Warehouses</h3>
+        <p>{{ warehouse_count }} warehouses</p>
+        <a href="{% url 'warehouse_list' %}">Go</a>
+    </div>
+
+    <div class="card">
+        <h3>Stock</h3>
+        <p>{{ stock_count }} items</p>
+        <a href="{% url 'stock_list' %}">Go</a>
+    </div>
+
+    <div class="card">
+        <h3>Suppliers</h3>
+        <p>{{ supplier_count }} suppliers</p>
+        <a href="{% url 'supplier_list' %}">Go</a>
+    </div>
+
+    <div class="card">
+        <h3>Purchase Orders</h3>
+        <p>{{ po_count }} POs</p>
+        <a href="{% url 'purchaseorder_list' %}">Go</a>
+    </div>
+</div>
+
+</body>
+</html>

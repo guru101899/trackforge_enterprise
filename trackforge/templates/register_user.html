@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create User</title>
+    <title>{% if form.instance.pk %}Update{% else %}Add{% endif %} Stock</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,7 +79,7 @@
 <body>
 
 <div class="container">
-    <h1>Create User</h1>
+    <h1>{% if form.instance.pk %}Update{% else %}Register{% endif %} User</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

@@ -1,23 +1,59 @@
 from django.shortcuts import render,redirect,HttpResponse
 from .models import CustomUser
 from .forms import CustomUserForm
+from inventory.models import Product
+from warehouses.models import Warehouse
+from stock.models import Stock
+from procurement.models import Supplier, PurchaseOrder
+from django.contrib import auth
+# Create your views here.
 
 
+def dashboard(request):
+    """Home page linking to all sections with summary counts"""
+    context = {
+        'user_count': CustomUser.objects.count(),
+        'product_count': Product.objects.count(),
+        'warehouse_count': Warehouse.objects.count(),
+        'stock_count': Stock.objects.count(),
+        'supplier_count': Supplier.objects.count(),
+        'po_count': PurchaseOrder.objects.count(),
+    }
+    return render(request, 'dashboard.html', context)
+
+
+
+def register_user(request):
+    if request.method == "POST":
+        form = CustomUserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])
+            user.save()
+            return redirect("login")
+    else:
+        form = CustomUserForm()
+    return render(request,"register_user.html",{"form":form ,"button_label":"Register"})
+
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = auth.authenticate(username=username,password=password)
+        if user:
+            auth.login(request,user)
+            return redirect('/')
+
+    return render(request,"login.html")
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
 
 def user_list(request):
     users = CustomUser.objects.all()
     return render(request,"user_list.html",{"users":users})
-
-def create_user(request):
-    if request.method == "POST":
-        form = CustomUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("user_list")
-
-    else:
-        form = CustomUserForm()
-    return render(request,"create_user.html",{"form":form ,"button_label":"Create"})
 
 def update_user(request,pk):
     user = CustomUser.objects.get(pk=pk)
@@ -28,7 +64,7 @@ def update_user(request,pk):
             return redirect("user_list")
     else:
         form = CustomUserForm(instance = user)
-        return render(request,"create_user.html",{"form":form, "button_label":"Update"})
+        return render(request,"register_user.html",{"form":form, "button_label":"Update"})
 
 
 def delete_user(request, pk):
