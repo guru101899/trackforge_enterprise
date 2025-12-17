@@ -3,9 +3,8 @@ from django.shortcuts import render,redirect,HttpResponse
 from .models import CustomUser
 from .forms import CustomUserForm
 from inventory.models import Product
-from warehouses.models import Warehouse
-from stock.models import Stock
-from procurement.models import Supplier, PurchaseOrder
+# from warehouses.models import Warehouse
+# from procurement.models import Supplier, PurchaseOrder
 from django.contrib import auth
 # Create your views here.
 
@@ -16,7 +15,7 @@ def dashboard(request):
         'user_count': CustomUser.objects.count(),
         'product_count': Product.objects.count(),
         'warehouse_count': Warehouse.objects.count(),
-        'stock_count': Stock.objects.count(),
+        'stock_count': StockMovement.objects.count(),
         'supplier_count': Supplier.objects.count(),
         'po_count': PurchaseOrder.objects.count(),
     }
