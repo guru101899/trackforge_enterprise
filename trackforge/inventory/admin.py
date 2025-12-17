@@ -21,6 +21,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name', 'sku')
     # Filter by category on the right side
     list_filter = ('category',)
+    exclude = ('updated_by',)
 
 
 @admin.register(Stock)

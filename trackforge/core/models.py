@@ -12,5 +12,13 @@ class AuditableModel(models.Model):
         blank=True
     )
 
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_updated",
+        null=True,
+        blank=True
+    )
+
     class Meta:
         abstract = True # This tells Django: "Don't make a table for this, just lend the fields to others"

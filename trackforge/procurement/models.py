@@ -1,21 +1,45 @@
 from django.db import models
+from core.models import AuditableModel
+from inventory.models import Product, Warehouse
 
-# Create your models here.
-class Supplier(models.Model):
+
+class Supplier(AuditableModel):
     name = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
+
     def __str__(self):
         return self.name
 
 
-class PurchaseOrder(models.Model):
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(
-        max_length=20,
-        choices=[('draft', 'Draft'), ('ordered', 'Ordered'), ('received', 'Received')],
-        default='draft'
-    )
+class PurchaseOrder(AuditableModel):
+    # Professional status tracking
+    STATUS_CHOICES = [
+                ('draft', 'Draft'),                 # Created but not submitted
+                ('submitted', 'Submitted'),         # Submitted for approval
+                ('approved', 'Approved'),           # Approved by manager/admin
+                ('partially_received', 'Partially Received'),  # Some items received
+                ('completed', 'Completed'),         # All items received
+            ]
+    supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name='purchase_orders')
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.PROTECT, related_name='purchase_orders')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
+    order_date = models.DateField(auto_now_add=True)
+
+    # We will use this later for our automation logic
+    reference_number = models.CharField(max_length=50, unique=True, help_text="Internal PO Number")
 
     def __str__(self):
-        return f"PO-{self.id} ({self.supplier.name})"
+        return f"{self.reference_number} - {self.supplier.name}"
+
+
+class POLineItem(models.Model):
+    """The individual items inside a Purchase Order"""
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price at time of purchase")
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} ({self.purchase_order.reference_number})"
