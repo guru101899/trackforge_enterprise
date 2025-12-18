@@ -9,18 +9,6 @@ from django.contrib import auth
 # Create your views here.
 
 
-def dashboard(request):
-    """Home page linking to all sections with summary counts"""
-    context = {
-        'user_count': CustomUser.objects.count(),
-        'product_count': Product.objects.count(),
-        'warehouse_count': Warehouse.objects.count(),
-        'stock_count': StockMovement.objects.count(),
-        'supplier_count': Supplier.objects.count(),
-        'po_count': PurchaseOrder.objects.count(),
-    }
-    return render(request, 'dashboard.html', context)
-
 
 def register_user(request):
     if request.method == "POST":
