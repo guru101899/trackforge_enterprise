@@ -78,10 +78,9 @@ class StockTransaction(AuditableModel):
     Every time stock changes, a record MUST be created here.
     """
     TX_TYPES = [
-        ('PO_RCV', 'Purchase Order Received'),
-        ('SALE', 'Sale Order'),
-        ('ADJ', 'Manual Adjustment'),  # For broken/lost items
-        ('XFER', 'Transfer'),
+        ('IN', 'Stock In'),
+        ('OUT', 'Stock Out'),
+        ('ADJ', 'Adjustment'),
     ]
 
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name='transactions')

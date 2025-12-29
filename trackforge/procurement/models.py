@@ -16,12 +16,11 @@ class Supplier(AuditableModel):
 class PurchaseOrder(AuditableModel):
     # Professional status tracking
     STATUS_CHOICES = [
-                ('draft', 'Draft'),                 # Created but not submitted
-                ('submitted', 'Submitted'),         # Submitted for approval
-                ('approved', 'Approved'),           # Approved by manager/admin
-                ('partially_received', 'Partially Received'),  # Some items received
-                ('completed', 'Completed'),         # All items received
-            ]
+        ('draft', 'Draft'),
+        ('partial', 'Partially Received'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
     supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name='purchase_orders')
     warehouse = models.ForeignKey(Warehouse, on_delete=models.PROTECT, related_name='purchase_orders')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
