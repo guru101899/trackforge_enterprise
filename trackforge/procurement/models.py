@@ -17,6 +17,7 @@ class PurchaseOrder(AuditableModel):
     # Professional status tracking
     STATUS_CHOICES = [
         ('draft', 'Draft'),
+        ('submitted', 'Submitted'),
         ('partial', 'Partially Received'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
@@ -39,6 +40,9 @@ class POLineItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price at time of purchase")
-
+    quantity_received = models.PositiveIntegerField(
+        default=0,
+        help_text="The amount that has actually arrived in the warehouse"
+    )
     def __str__(self):
         return f"{self.quantity} x {self.product.name} ({self.purchase_order.reference_number})"

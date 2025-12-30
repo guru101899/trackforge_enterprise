@@ -23,7 +23,7 @@ class POLineItemInline(admin.TabularInline):
     """Allows adding products directly inside the Purchase Order page"""
     model = POLineItem
     extra = 1  # Shows one empty row by default
-    fields = ('product', 'quantity', 'unit_price')
+    fields = ('product', 'quantity', 'unit_price','quantity_received')
 
 
 @admin.register(PurchaseOrder)
