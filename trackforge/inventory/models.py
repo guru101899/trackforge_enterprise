@@ -77,14 +77,14 @@ class StockTransaction(AuditableModel):
     The 'History' view.
     Every time stock changes, a record MUST be created here.
     """
-    TX_TYPES = [
-        ('IN', 'Stock In'),
-        ('OUT', 'Stock Out'),
-        ('ADJ', 'Adjustment'),
+    TX_TYPES =[
+        ('po_complete', 'PO Complete'),
+        ('po_partial', 'PO Partial'),
+        ('po_cancel', 'PO Cancelled'),
     ]
 
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name='transactions')
-    transaction_type = models.CharField(max_length=10, choices=TX_TYPES)
+    transaction_type = models.CharField(max_length=100, choices=TX_TYPES)
 
     quantity_changed = models.DecimalField(max_digits=12, decimal_places=2,
                                            help_text="Negative for removal, Positive for addition")
