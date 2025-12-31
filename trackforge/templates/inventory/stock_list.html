@@ -1,0 +1,38 @@
+<div class="container">
+    <h2>Live Stock Inventory</h2>
+    <p>Current balance across all warehouses.</p>
+    <hr>
+
+    <table border="1" width="100%" cellpadding="10" style="border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f8f9fa;">
+                <th>Product SKU</th>
+                <th>Product Name</th>
+                <th>Warehouse</th>
+                <th>Current Quantity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in stock %}
+            <tr>
+                <td><code>{{ s.product.sku }}</code></td>
+                <td>{{ s.product.name }}</td>
+                <td>{{ s.warehouse.name }} ({{ s.warehouse.code }})</td>
+                <td><strong>{{ s.quantity }}</strong></td>
+                <td>
+                    {% if s.quantity > 0 %}
+                        <span style="color: green;">In Stock</span>
+                    {% else %}
+                        <span style="color: red;">Out of Stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No stock records found. Receive a Purchase Order to begin.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

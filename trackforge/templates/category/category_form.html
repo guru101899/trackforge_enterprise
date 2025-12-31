@@ -1,0 +1,7 @@
+<h2>{{ title }}</h2> <hr>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" style="background: green; color: white;">Save Category</button>
+    <a href="{% url 'category_list' %}">Cancel</a>
+</form>

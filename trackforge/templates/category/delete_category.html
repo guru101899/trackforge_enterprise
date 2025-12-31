@@ -1,0 +1,7 @@
+<h2>Delete Category</h2>
+<p>Are you sure you want to delete <strong>"{{ category.name }}"</strong>?</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" style="background: red; color: white;">Yes, Delete Permanently</button>
+    <a href="{% url 'category_list' %}">Cancel</a>
+</form>

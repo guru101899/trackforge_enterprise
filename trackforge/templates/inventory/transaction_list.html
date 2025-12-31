@@ -1,0 +1,38 @@
+<div class="container">
+    <h2>Stock Transaction History</h2>
+    <p>Full audit trail of all inventory movements.</p>
+    <hr>
+
+    <table border="1" width="100%" cellpadding="10" style="border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f8f9fa;">
+                <th>Date & Time</th>
+                <th>Transaction Type</th>
+                <th>Item & Location</th>
+                <th>quantity changed</th>
+                <th>Stock After Transaction</th>
+                <th>Reference</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tx in transactions %}
+            <tr>
+                <td>{{ tx.created_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    <strong>{{ tx.get_transaction_type_display }}</strong>
+                </td>
+                <td>{{ tx.stock.product.sku }} @ {{ tx.stock.warehouse.code }}</td>
+                <td style="font-weight: bold; color: {% if tx.quantity_changed > 0 %}green{% else %}red{% endif %};">
+                    {{ tx.quantity_changed }}
+                </td>
+                <td>{{ tx.stock_after_transaction }}</td>
+                <td><code>{{ tx.reference_document|default:"N/A" }}</code></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center;">No transactions recorded.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
