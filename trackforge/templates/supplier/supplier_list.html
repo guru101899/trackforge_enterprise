@@ -42,7 +42,8 @@
         <th>ID</th>
         <th>Name</th>
         <th>Contact Email</th>
-        <th>Active</th>
+        <th>Phone</th>
+        <th>Address</th>
         <th>Actions</th>
     </tr>
     {% for supplier in suppliers %}
@@ -50,7 +51,8 @@
         <td>{{ supplier.id }}</td>
         <td>{{ supplier.name }}</td>
         <td>{{ supplier.email }}</td>
-        <td>{{ supplier.active }}</td>
+        <td>{{ supplier.phone }}</td>
+        <td>{{ supplier.address }}</td>
         <td>
             <a href="{% url 'update_supplier' supplier.id %}" class="button">Edit</a>
             <a href="{% url 'delete_supplier' supplier.id %}" class="button delete">Delete</a>

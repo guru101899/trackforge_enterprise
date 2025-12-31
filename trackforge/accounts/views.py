@@ -6,10 +6,9 @@ from inventory.models import Product
 # from warehouses.models import Warehouse
 # from procurement.models import Supplier, PurchaseOrder
 from django.contrib import auth
+
+
 # Create your views here.
-
-
-
 def register_user(request):
     if request.method == "POST":
         form = CustomUserForm(request.POST)
