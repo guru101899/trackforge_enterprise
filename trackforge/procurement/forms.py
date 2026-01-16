@@ -1,14 +1,27 @@
 from django import forms
-from .models import PurchaseOrder,Supplier
+from .models import *
+from django.forms import inlineformset_factory
 
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
-        fields = '__all__'
-
+        fields = ["name",'email',"phone",'address']
 
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
-        fields = ["supplier","status"]
+        fields = ["reference_number","supplier","warehouse"]
 
+class POLineItemForm(forms.ModelForm):
+    class Meta:
+        model = POLineItem
+        fields = ["product","quantity","unit_price"]
+
+# In your forms.py
+POLineItemFormSet = inlineformset_factory(
+    PurchaseOrder,
+    POLineItem,
+    form=POLineItemForm,
+    extra=3,
+    can_delete=True,
+)
