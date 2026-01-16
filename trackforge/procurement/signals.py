@@ -7,7 +7,7 @@ from inventory.models import Stock, StockTransaction
 
 
 @receiver(post_save, sender=PurchaseOrder)
-def update_purchase_order_on_status_choices(sender, created, instance, **kwargs):
+def update_purchase_order_on_status_choices(sender, instance, **kwargs):
     def run_stock_update():
         # 1. Skip if still in planning stages
         if instance.status in ["draft", "submitted"]:
@@ -96,7 +96,8 @@ def update_purchase_order_on_status_choices(sender, created, instance, **kwargs)
                     StockTransaction.objects.create(
                         stock=stock,
                         transaction_type="po_cancel",
-                        quantity_changed=history_to_undo,
+                        #  Make this negative for the audit trail
+                        quantity_changed=-history_to_undo,
                         stock_after_transaction=stock.quantity,
                         reference_document=f"PO: {instance.reference_number}"
                     )
