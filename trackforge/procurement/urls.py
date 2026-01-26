@@ -8,9 +8,9 @@ urlpatterns = [
     path('update_supplier/<int:pk>/', views.update_supplier, name='update_supplier'),
     path('delete_supplier/<int:pk>/', views.delete_supplier, name='delete_supplier'),
 
-    # Purchase Order URLs
+#     # Purchase Order URLs
     path('purchaseorder_list/', views.purchaseorder_list, name='purchaseorder_list'),
-    path('add_purchaseorder/', views.add_purchaseorder, name='add_purchaseorder'),
-    path('update_purchaseorder/<int:pk>/', views.update_purchaseorder, name='update_purchaseorder'),
-    path('delete_purchaseorder/<int:pk>/', views.delete_purchaseorder, name='delete_purchaseorder'),
+    path('add_purchaseorder/', views.add_po, name='add_purchsalorder'),
+    path('purchaseorder/<int:pk>/', views.po_detail, name='po_detail'),
+
 ]
