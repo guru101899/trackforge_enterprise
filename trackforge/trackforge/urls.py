@@ -20,9 +20,9 @@ from core.views import dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', dashboard, name='dashboard'),  # The landing page
     path('accounts/', include('accounts.urls')),
     path('inventory/', include('inventory.urls')),
-    path('', dashboard, name='dashboard'),  # The landing page
-    # path('procurement/', include('procurement.urls')),
+    path('procurement/', include('procurement.urls')),
 
 ]
