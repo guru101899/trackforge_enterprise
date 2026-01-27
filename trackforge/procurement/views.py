@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required,permission_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Supplier, PurchaseOrder
-from .forms import SupplierForm, PurchaseOrderForm
+from .models import *
+from .forms import *
 
 # Supplier Views
 
@@ -45,42 +45,67 @@ def delete_supplier(request, pk):
     return render(request, 'supplier/delete_supplier.html', {'supplier': supplier})
 
 
-# PurchaseOrder Views
+from django.shortcuts import render, get_object_or_404
+from .models import PurchaseOrder
+
+
 @login_required
 def purchaseorder_list(request):
-    orders = PurchaseOrder.objects.all()
-    return render(request, 'purchaseorder/purchaseorder_list.html', {'orders': orders})
+    # Fixed ordering: Newest POs appear first
+    orders = PurchaseOrder.objects.all().order_by('-id')
+
+    # Logic for the professional stat cards
+    stats = {
+        'total': orders.count(),
+        'pending': orders.filter(status__in=['draft', 'submitted']).count(),
+        'received': orders.filter(status='completed').count(),
+        'cancelled': orders.filter(status='cancelled').count(),
+    }
+
+    return render(request, 'purchaseorder/purchaseorder_list.html', {
+        'orders': orders,
+        'stats': stats
+    })
 
 
-@permission_required('procurement.add_purchaseorder',raise_exception=True)
-def add_purchaseorder(request):
+def po_detail(request, pk):
+    order = get_object_or_404(PurchaseOrder, pk=pk)
+
+    # 1. Get the items and convert them to a LIST immediately
+    # This prevents the template from re-fetching "empty" objects from the DB.
+    items = list(order.items.all())
+
+    grand_total = 0
+    for item in items:
+        # 2. Attach the math to each item in the list
+        item.line_total = item.quantity * item.unit_price
+        grand_total += item.line_total
+
+    return render(request, 'purchaseorder/po_detail.html', {
+        'order': order,
+        'items': items,  # Pass the calculated LIST, not the queryset
+        'grand_total': grand_total
+    })
+def add_po(request):
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST)
-        if form.is_valid():
-            form.save()
+        po_form = PurchaseOrderForm(request.POST)
+        # Force the prefix to 'items'
+        formset = POLineItemFormSet(request.POST, prefix='items')
+
+        if po_form.is_valid() and formset.is_valid():
+            purchase_order = po_form.save()
+            # Save items linked to the order
+            items = formset.save(commit=False)
+            for item in items:
+                item.purchase_order = purchase_order
+                item.save()
             return redirect('purchaseorder_list')
     else:
-        form = PurchaseOrderForm()
-    return render(request, 'purchaseorder/add_purchaseorder.html', {'form': form})
+        po_form = PurchaseOrderForm()
+        # Use the same prefix for the empty forms
+        formset = POLineItemFormSet(prefix='items')
 
-
-@permission_required('procurement.change_purchaseorder',raise_exception=True)
-def update_purchaseorder(request, pk):
-    order = get_object_or_404(PurchaseOrder, pk=pk)
-    if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST, instance=order)
-        if form.is_valid():
-            form.save()
-            return redirect('purchaseorder_list')
-    else:
-        form = PurchaseOrderForm(instance=order)
-    return render(request, 'purchaseorder/add_purchaseorder.html', {'form': form})
-
-
-@permission_required('procurement.delete_purchaseorder',raise_exception=True)
-def delete_purchaseorder(request, pk):
-    order = get_object_or_404(PurchaseOrder, pk=pk)
-    if request.method == 'POST':
-        order.delete()
-        return redirect('purchaseorder_list')
-    return render(request, 'purchaseorder/delete_purchaseorder.html', {'order': order})
+    return render(request, "purchaseorder/add_po.html", {
+        "po_form": po_form,
+        "formset": formset
+    })
